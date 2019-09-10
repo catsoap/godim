@@ -45,7 +45,9 @@ func TestGodim_DeclareDefault(t *testing.T) {
 
 type A struct {
 	B              *B     `inject:"service:bbb"`
+	b              *B     `inject:"service:bbb"`
 	Lab            string `config:"lab.key"`
+	lab            string `config:"lab.key"`
 	PreInitialized string
 }
 
@@ -81,7 +83,9 @@ func (b *B) Priority() int {
 
 type C struct {
 	B              *B    `inject:"service:bbb"`
+	b              *B    `inject:"service:bbb"`
 	Myint          int64 `config:"myint.key"`
+	myint          int64 `config:"myint.key"`
 	Val            int
 	PreInitialized string
 }
@@ -131,18 +135,35 @@ func TestGodim_Declare_shouldHandleDependenciesAndGetThemBack(t *testing.T) {
 	}
 
 	if a.Lab != "bid" {
-		t.Fatalf("string property got wrong value: 'bid' expected but got '%s'.", a.Lab)
+		t.Fatalf("exported string property got wrong value: 'bid' expected but got '%s'.", a.Lab)
+	}
+
+	if a.lab != "bid" {
+		t.Fatalf("unexported string property got wrong value: 'bid' expected but got '%s'.", a.lab)
 	}
 
 	if c.Myint != 12 {
-		t.Fatalf("int64 property got wrong value: 12 expected but got %d.", c.Myint)
+		t.Fatalf("exported int64 property got wrong value: 12 expected but got %d.", c.Myint)
+	}
+
+	if c.myint != 12 {
+		t.Fatalf("unexported int64 property got wrong value: 12 expected but got %d.", c.myint)
 	}
 
 	if a.B != &b {
 		t.Fatalf("A got an unexpected value for B: got %+v but expected %+v.", a.B, &b)
 	}
+
 	if c.B != &b {
 		t.Fatalf("C got an unexpected value for B: got %+v but expected %+v.", c.B, &b)
+	}
+
+	if a.b != &b {
+		t.Fatalf("A got an unexpected value for b: got %+v but expected %+v.", a.b, &b)
+	}
+
+	if c.b != &b {
+		t.Fatalf("C got an unexpected value for b: got %+v but expected %+v.", c.b, &b)
 	}
 
 	if !g.lifecycle.current(stRun) {

@@ -6,7 +6,7 @@ GOFILES := $(shell find . -name "*.go" -type f -not -path "./vendor/*")
 OSARCH := "linux/amd64 linux/386 windows/amd64 windows/386 darwin/amd64 darwin/386"
 ENV = /usr/bin/env
 
-.SHELLFLAGS = -c # Run commands in a -c flag 
+.SHELLFLAGS = -c # Run commands in a -c flag
 .SILENT: ; # no need for @
 .ONESHELL: ; # recipes execute in same shell
 .NOTPARALLEL: ; # wait for this target to finish

@@ -9,6 +9,7 @@ import (
 	"reflect"
 	"sort"
 	"strings"
+	"unsafe"
 )
 
 const (
@@ -221,6 +222,9 @@ func (registry *Registry) configure(f func(key string, val reflect.Value) (inter
 
 func setFieldOnValue(v reflect.Value, fieldname, key string, f func(key string, val reflect.Value) (interface{}, error)) error {
 	field := v.FieldByName(fieldname)
+	if string(fieldname[0]) == strings.ToLower(string(fieldname[0])) {
+		field = reflect.NewAt(field.Type(), unsafe.Pointer(field.UnsafeAddr())).Elem()
+	}
 	toSet, err := f(key, field)
 	if err != nil {
 		return err
@@ -245,7 +249,11 @@ func (registry *Registry) injection() error {
 				elts := strings.Split(key, ":")
 				toInject := registry.getElement(elts[0], elts[1])
 				if toInject != nil {
-					elem.FieldByName(fieldname).Set(reflect.ValueOf(toInject))
+					el := elem.FieldByName(fieldname)
+					if string(fieldname[0]) == strings.ToLower(string(fieldname[0])) {
+						el = reflect.NewAt(el.Type(), unsafe.Pointer(el.UnsafeAddr())).Elem()
+					}
+					el.Set(reflect.ValueOf(toInject))
 				}
 
 			}
