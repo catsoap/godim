@@ -1,4 +1,5 @@
-SHELL := $(shell which bash) # set default shell
+# set default shell
+SHELL := $(shell which bash)
 GOFMT ?= gofmt "-s"
 PACKAGES ?= $(shell go list ./... | grep -v /vendor/)
 GOFILES := $(shell find . -name "*.go" -type f -not -path "./vendor/*")
@@ -6,7 +7,7 @@ GOFILES := $(shell find . -name "*.go" -type f -not -path "./vendor/*")
 OSARCH := "linux/amd64 linux/386 windows/amd64 windows/386 darwin/amd64 darwin/386"
 ENV = /usr/bin/env
 
-.SHELLFLAGS = -c # Run commands in a -c flag 
+.SHELLFLAGS = -c # Run commands in a -c flag
 .SILENT: ; # no need for @
 .ONESHELL: ; # recipes execute in same shell
 .NOTPARALLEL: ; # wait for this target to finish
@@ -21,7 +22,7 @@ help: ## Show Help
 dep: ## Get build dependencies
 	go get -v -u github.com/golang/dep/cmd/dep; \
 	go get github.com/mitchellh/gox; \
-	go get github.com/mattn/goveralls; 
+	go get github.com/mattn/goveralls;
 
 lint: ## lint the code
 	@hash golint > /dev/null 2>&1; if [ $$? -ne 0 ]; then \

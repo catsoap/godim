@@ -35,7 +35,9 @@ func TestDefaultGodim(t *testing.T) {
 
 type A struct {
 	B              *B     `inject:"service:bbb"`
+	b              *B     `inject:"service:bbb"`
 	Lab            string `config:"lab.key"`
+	lab            string `config:"lab.key"`
 	PreInitialized string
 }
 
@@ -71,7 +73,9 @@ func (b *B) Priority() int {
 
 type C struct {
 	B              *B    `inject:"service:bbb"`
+	b              *B    `inject:"service:bbb"`
 	Myint          int64 `config:"myint.key"`
+	myint          int64 `config:"myint.key"`
 	Val            int
 	PreInitialized string
 }
@@ -112,16 +116,33 @@ func TestDeclare(t *testing.T) {
 	if err != nil {
 		t.Fatalf(" error while configuring %s \n", err)
 	}
-	if a.Lab != "bid" {
-		t.Fatalf("misconfig on string")
-	}
-	if c.Myint != 12 {
-		t.Fatalf("misconfig on int64")
-	}
 
 	fmt.Printf("A : %+v\n", a)
-	if a.B != &b || c.B != &b {
+	if a.B != &b {
 		t.Fatalf("misinjection %+v %+v", a.B, &b)
+	}
+	if a.b != &b {
+		t.Fatalf("misinjection %+v %+v", a.b, &b)
+	}
+	if a.Lab != "bid" {
+		t.Fatalf("misconfig on string %+v", a.Lab)
+	}
+	if a.lab != "bid" {
+		t.Fatalf("misconfig on string %+v", a.lab)
+	}
+
+	fmt.Printf("C : %+v\n", c)
+	if c.B != &b {
+		t.Fatalf("misinjection %+v %+v", c.B, &b)
+	}
+	if c.b != &b {
+		t.Fatalf("misinjection %+v %+v", c.b, &b)
+	}
+	if c.Myint != 12 {
+		t.Fatalf("misconfig on int64 %+v", c.Myint)
+	}
+	if c.myint != 12 {
+		t.Fatalf("misconfig on int64 %+v", c.myint)
 	}
 	if !g.lifecycle.current(stRun) {
 		t.Fatalf("Wrong state %s", g.lifecycle)
